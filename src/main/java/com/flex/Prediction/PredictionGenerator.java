@@ -1,49 +1,29 @@
 package com.flex.Prediction;
 
 import com.flex.DataSequence;
-import org.xml.sax.SAXException;
 
-import javax.xml.parsers.ParserConfigurationException;
-import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.Random;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class PredictionGenerator {
     private ArrayList<ArrayList<Prediction>> predictions = new ArrayList<>();
 
-    public PredictionGenerator(DataSequence<Prediction>... dataSequences) throws IOException, ParserConfigurationException, SAXException, SQLException {
+    public PredictionGenerator(DataSequence<Prediction>... dataSequences) throws SQLException {
+        ExecutorService executor = Executors.newWorkStealingPool(dataSequences.length);
 
-        Prediction prediction;
-        for (DataSequence<Prediction> parser :
-                dataSequences) {
-
-            while ((prediction = parser.NextElement()) != null) {
-                ArrayList<Prediction> predictions = findPredictionsBySign(prediction.sign);
-                if (predictions != null) {
-                    if (!predictions.contains(prediction))
-                        predictions.add(prediction);
-                } else {
-                    predictions = new ArrayList<>();
-                    predictions.add(prediction);
-                    this.predictions.add(predictions);
-                }
-
-            }
+        for (DataSequence<Prediction> sequence : dataSequences) {
+            executor.execute(() -> addPredictionsSafe(sequence));
         }
+        try {
+            executor.wait();
+        } catch (Exception e) { }
     }
-
-    private ArrayList<Prediction> findPredictionsBySign(String sign) {
-        AtomicReference<ArrayList<Prediction>> predictions = new AtomicReference<>();
-        this.predictions.forEach((p) -> {
-            if (p.get(0).sign.compareTo(sign) == 0) predictions.set(p);
-        });
-        return predictions.get();
-    }
-
     public Prediction getPrediction(String sign, GregorianCalendar calendar) {
 
         ArrayList<Prediction> predictions = findPredictionsBySign(sign);
@@ -53,13 +33,30 @@ public class PredictionGenerator {
         prediction.date = calendar;
         return prediction;
     }
+    void addPredictionsSafe(DataSequence<Prediction> predictionsSource) {
+        try {
+            addPredictions(predictionsSource);
+        } catch (Exception e) { }
+    }
+    private void addPredictions(DataSequence<Prediction> predictionsSource) throws SQLException {
+        Prediction prediction;
+        while ((prediction = predictionsSource.NextElement()) != null) {
+            ArrayList<Prediction> predictions = findPredictionsBySign(prediction.sign);
+            if (predictions != null) {
+                if (!predictions.contains(prediction))
+                    predictions.add(prediction);
+            } else {
+                predictions = new ArrayList<>();
+                predictions.add(prediction);
+                this.predictions.add(predictions);
+            }
+        }
+    }
+    private ArrayList<Prediction> findPredictionsBySign(String sign) {
+        AtomicReference<ArrayList<Prediction>> predictions = new AtomicReference<>();
+        this.predictions.forEach((p) -> {
+            if (p.get(0).sign.compareTo(sign) == 0) predictions.set(p);
+        });
+        return predictions.get();
+    }
 }
-
-
-
-
-
-
-
-
-

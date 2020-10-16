@@ -20,7 +20,6 @@ public class WeatherOfflineService extends Service implements WeatherService {
 
     public WeatherOfflineService(WeatherUI io, WeatherGenerator generator) throws ParserConfigurationException, IOException, SAXException {
         view = io;
-
         weatherGenerator = generator;
         info = new Info("Погода", "Прогноз погоды");
     }

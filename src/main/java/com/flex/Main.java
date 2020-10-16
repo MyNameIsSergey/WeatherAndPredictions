@@ -24,7 +24,9 @@ public class Main {
     }
 
     public static Service ConfigureWeatherService() throws IOException, SAXException, ParserConfigurationException, SQLException {
-        WeatherGenerator generator = new WeatherGenerator(new WeatherDataSequenceXML(OpenDOM("weather.xml")));
+        WeatherGenerator generator = new WeatherGenerator(
+                new WeatherDataSequenceXML(OpenDOM("weather.xml")),
+                new WeatherDataSequenceXML(OpenDOM("weather1.xml")));
 
         WeatherConsoleUI serviceIO = new WeatherConsoleUI();
         WeatherOfflineService service = new WeatherOfflineService(serviceIO, generator);
@@ -32,7 +34,9 @@ public class Main {
         return service;
     }
     public static Service ConfigurePredictionService() throws IOException, SAXException, ParserConfigurationException, SQLException {
-        PredictionGenerator generator = new PredictionGenerator(new PredictionDataSequenceXML(OpenDOM("predictions.xml")));
+        PredictionGenerator generator = new PredictionGenerator(
+                new PredictionDataSequenceXML(OpenDOM("predictions.xml")),
+                new PredictionDataSequenceXML(OpenDOM("predictions1.xml")));
 
         PredictionConsoleUI UI = new PredictionConsoleUI();
         PredictionOfflineService service = new PredictionOfflineService(UI, generator);

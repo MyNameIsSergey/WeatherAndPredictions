@@ -2,9 +2,9 @@
 
 <root>
     <weather>
-        <description>Туман</description>
+        <description>Солнечно</description>
     </weather>
     <weather>
-        <description>Балдеж</description>
+        <description>Дождливо</description>
     </weather>
 </root>
