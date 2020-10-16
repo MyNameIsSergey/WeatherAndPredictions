@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<root>
+    <weather>
+        <description>Sunny</description>
+    </weather>
+    <weather>
+        <description>Rainy</description>
+    </weather>
+</root>
