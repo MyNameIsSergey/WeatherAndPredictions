@@ -3,6 +3,7 @@ package com.flex.Prediction;
 import com.flex.Info;
 import com.flex.OperationInfo;
 import com.flex.Service;
+import com.flex.ServiceExecutionResult;
 import org.xml.sax.SAXException;
 
 import javax.xml.parsers.ParserConfigurationException;
@@ -13,6 +14,7 @@ public class PredictionOfflineService extends Service implements PredictionServi
     private PredictionUI view;
     private PredictionGenerator generator;
     private OperationInfo operationInfo;
+    private ServiceExecutionResult executionResult;
 
     public PredictionOfflineService(PredictionUI view, PredictionGenerator generator) throws IOException, ParserConfigurationException, SAXException {
         this.view = view;
@@ -30,8 +32,13 @@ public class PredictionOfflineService extends Service implements PredictionServi
     }
 
     @Override
-    public void run() {
-        view.show();
+    public ServiceExecutionResult run() {
+        try {
+            view.show();
+        } catch (Exception e) {
+            return ServiceExecutionResult.Error;
+        }
+        return executionResult;
     }
 
     public void predictionBySign(String sign, GregorianCalendar date) {
@@ -39,10 +46,12 @@ public class PredictionOfflineService extends Service implements PredictionServi
         if (prediction == null) {
             view.showError(PredictionError.IncorrectSign);
             operationInfo = null;
+            executionResult = ServiceExecutionResult.Cancel;
         } else {
             view.showPrediction(prediction);
             operationInfo = new OperationInfo(view.getServiceInfo());
             operationInfo.time = new GregorianCalendar();
+            executionResult = ServiceExecutionResult.Success;
         }
     }
 }

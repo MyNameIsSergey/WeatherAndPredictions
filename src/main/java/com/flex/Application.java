@@ -22,13 +22,15 @@ class Application {
     }
     public void useService(int index) {
         if (services.size() > index && index >= 0) {
-            services.get(index).run();
-            OperationInfo info = services.get(index).tabLastOperation();
+            OperationInfo info = services.get(index).execute();
             if(info != null)
                 history.add(info);
         }
     }
-    public void close() {
+    public void onClose() {
+        serialize();
+    }
+    private void serialize() {
         try(ObjectOutputStream stream = new ObjectOutputStream(new FileOutputStream(openOrCreateFile())))
         {
             stream.writeObject(history);
@@ -36,7 +38,6 @@ class Application {
         catch(Exception ex) {
         }
     }
-
     public Collection<OperationInfo> getHistory() {
         return history;
     }

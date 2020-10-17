@@ -14,7 +14,7 @@ public class MenuUI {
     public void show() {
         while (!exit)
             mainNode();
-        application.close();
+        application.onClose();
     }
 
     private void mainNode() {
@@ -82,8 +82,20 @@ public class MenuUI {
     private void showServices() {
         Iterable<Service> services = application.getServices();
         int i = 1;
+        System.out.println("-------------------------------");
         for (Service service : services) {
             System.out.println(i++ + ". " + service.getInfo().toString());
+            System.out.println("Статистика использования (за время запуска приложения):");
+            ServiceStatistic statistic = service.getStatisticPerAppInstance();
+            System.out.println("Количество запусков: ");
+            System.out.println(statistic.countOfExecuting);
+            System.out.println("Время последнего запуска: ");
+            System.out.println(statistic.lastExecutionStartTime);
+            System.out.println("Время окончания выполнения: ");
+            System.out.println(statistic.lastExecutionEndDuration);
+            System.out.println("Результат выполнения: ");
+            System.out.println(statistic.executionResult);
+            System.out.println("-------------------------------");
         }
         System.out.println("0. Выход");
         System.out.println("=================================");

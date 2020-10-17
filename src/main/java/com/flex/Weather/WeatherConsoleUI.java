@@ -15,12 +15,11 @@ public class WeatherConsoleUI implements WeatherUI {
 
     public void show()
     {
-        Info info = service.getInfo();
+        Info info = getServiceInfo();
         System.out.println(info.name);
         System.out.println(info.description);
         service.findWeather(new GregorianCalendar(), inputDate());
     }
-
     private GregorianCalendar inputDate()
     {
         Scanner s = new Scanner(System.in);
