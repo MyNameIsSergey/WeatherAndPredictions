@@ -65,4 +65,9 @@ public class WeatherConsoleUI implements WeatherUI {
             date.add(Calendar.DAY_OF_MONTH, 1);
         }
     }
+
+    @Override
+    public Info getServiceInfo() {
+        return new Info("Погода", "Прогноз погоды");
+    }
 }

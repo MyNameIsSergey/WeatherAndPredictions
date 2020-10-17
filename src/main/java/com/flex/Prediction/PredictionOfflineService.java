@@ -17,7 +17,11 @@ public class PredictionOfflineService extends Service implements PredictionServi
     public PredictionOfflineService(PredictionUI view, PredictionGenerator generator) throws IOException, ParserConfigurationException, SAXException {
         this.view = view;
         this.generator = generator;
-        super.info = new Info("Предсказания", "Предсказание по знаку");
+    }
+
+    @Override
+    public Info getInfo() {
+        return view.getServiceInfo();
     }
 
     @Override
@@ -37,7 +41,7 @@ public class PredictionOfflineService extends Service implements PredictionServi
             operationInfo = null;
         } else {
             view.showPrediction(prediction);
-            operationInfo = new OperationInfo(info);
+            operationInfo = new OperationInfo(view.getServiceInfo());
             operationInfo.time = new GregorianCalendar();
         }
     }

@@ -55,4 +55,9 @@ public class PredictionConsoleUI implements PredictionUI {
         }
         System.out.println(msg);
     }
+
+    @Override
+    public Info getServiceInfo() {
+        return new Info("Предсказания", "Предсказание по знаку");
+    }
 }
