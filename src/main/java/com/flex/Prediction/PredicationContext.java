@@ -10,6 +10,7 @@ import java.util.ArrayList;
 public class PredicationContext extends DBContext implements DataSequence<Prediction> {
     private Object[] predictions;
     private int counter = 0;
+
     public PredicationContext(String url) throws SQLException {
         super.Connect(url);
         ResultSet query = super.Query("SELECT sign, text FROM predications;");
@@ -23,8 +24,8 @@ public class PredicationContext extends DBContext implements DataSequence<Predic
 
     @Override
     public Prediction NextElement() {
-        if(counter < predictions.length)
-            return (Prediction)predictions[counter++];
+        if (counter < predictions.length)
+            return (Prediction) predictions[counter++];
         return null;
     }
 }

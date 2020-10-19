@@ -10,7 +10,7 @@ import java.util.concurrent.Executors;
 public class PredictionGenerator {
     private Map<String, List<Prediction>> predictions = new HashMap<>();
 
-    public PredictionGenerator(DataSequence<Prediction>... dataSequences) throws SQLException {
+    public PredictionGenerator(DataSequence<Prediction>... dataSequences) {
         ExecutorService executor = Executors.newWorkStealingPool(dataSequences.length);
 
         for (DataSequence<Prediction> sequence : dataSequences) {
@@ -18,8 +18,10 @@ public class PredictionGenerator {
         }
         try {
             executor.wait();
-        } catch (Exception e) { }
+        } catch (Exception e) {
+        }
     }
+
     public Prediction getPrediction(String sign, GregorianCalendar calendar) {
 
         List<Prediction> predictions = getPredictionsBySign(sign);
@@ -29,11 +31,14 @@ public class PredictionGenerator {
         prediction.date = calendar;
         return prediction;
     }
+
     void addPredictionsSafe(DataSequence<Prediction> predictionsSource) {
         try {
             addPredictions(predictionsSource);
-        } catch (Exception e) { }
+        } catch (Exception e) {
+        }
     }
+
     private void addPredictions(DataSequence<Prediction> predictionsSource) throws SQLException {
         Prediction prediction;
         while ((prediction = predictionsSource.NextElement()) != null) {
@@ -48,6 +53,7 @@ public class PredictionGenerator {
             }
         }
     }
+
     private List<Prediction> getPredictionsBySign(String sign) {
         return predictions.get(sign);
     }
