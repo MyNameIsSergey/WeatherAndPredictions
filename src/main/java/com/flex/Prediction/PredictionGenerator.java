@@ -13,9 +13,9 @@ public class PredictionGenerator {
     public PredictionGenerator(DataSequence<Prediction>... dataSequences) {
         ExecutorService executor = Executors.newWorkStealingPool(dataSequences.length);
 
-        for (DataSequence<Prediction> sequence : dataSequences) {
+        Arrays.stream(dataSequences).forEach(sequence -> {
             executor.execute(() -> addPredictionsSafe(sequence));
-        }
+        });
         try {
             executor.wait();
         } catch (Exception e) {

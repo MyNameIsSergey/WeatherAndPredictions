@@ -6,9 +6,11 @@ import com.flex.DataSequence;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class PredicationContext extends DBContext implements DataSequence<Prediction> {
-    private Object[] predictions;
+    private List<Object> predictions;
     private int counter = 0;
 
     public PredicationContext(String url) throws SQLException {
@@ -18,14 +20,16 @@ public class PredicationContext extends DBContext implements DataSequence<Predic
         while (query.next()) {
             list.add(new Prediction(query.getString("sign"), query.getString("text")));
         }
-        predictions = list.stream().distinct().toArray();
+        predictions = list.stream().distinct().collect(Collectors.toList());
         close();
     }
 
     @Override
     public Prediction NextElement() {
-        if (counter < predictions.length)
-            return (Prediction) predictions[counter++];
+        if (counter < predictions.size())
+            return (Prediction) predictions.get(counter++);
         return null;
     }
+
+
 }

@@ -4,29 +4,27 @@ package com.flex.Weather;
 import com.flex.DataSequence;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
-import java.util.Random;
+import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class WeatherGenerator {
     ArrayList<Weather> weathers = new ArrayList<Weather>();
+
     public WeatherGenerator(DataSequence<Weather>... weatherDataSequences) throws SQLException {
         ExecutorService executor = Executors.newWorkStealingPool(weatherDataSequences.length);
 
-        for (DataSequence<Weather> weatherParser:
-                weatherDataSequences) {
-            executor.execute(() -> addWeathers(weatherParser));
-        }
+        Arrays.stream(weatherDataSequences).forEach(dataSequence -> {
+            executor.execute(() -> addWeathers(dataSequence));
+        });
         try {
             executor.wait();
-        } catch (Exception e) { }
+        } catch (Exception e) {
+        }
     }
-    public Weather[] getWeatherByDate(GregorianCalendar first, GregorianCalendar last)
-    {
-        if(last.before(first))
+
+    public Weather[] getWeatherByDate(GregorianCalendar first, GregorianCalendar last) {
+        if (last.before(first))
             throw new IllegalArgumentException("Second date after first");
         int days = last.get(Calendar.DAY_OF_YEAR) - first.get(Calendar.DAY_OF_YEAR);
         Weather[] weathers = new Weather[days];
@@ -34,6 +32,7 @@ public class WeatherGenerator {
         randomizeWeather(weathers, startSeed);
         return weathers;
     }
+
     private Weather[] randomizeWeather(Weather[] weathers, int startSeed) {
         Random random = new Random();
         for (int i = 0; i < weathers.length; i++) {
@@ -46,6 +45,7 @@ public class WeatherGenerator {
         }
         return weathers;
     }
+
     private void addWeathers(DataSequence<Weather> weathers) {
         Weather weather;
         try {
@@ -53,6 +53,7 @@ public class WeatherGenerator {
                 if (!this.weathers.contains(weather))
                     this.weathers.add(weather);
             }
-        } catch (SQLException exception) { }
+        } catch (SQLException exception) {
+        }
     }
 }

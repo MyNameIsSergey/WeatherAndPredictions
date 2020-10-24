@@ -2,6 +2,7 @@ package com.flex.Weather;
 
 import com.flex.Info;
 
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.Scanner;
@@ -50,19 +51,23 @@ public class WeatherConsoleUI implements WeatherUI {
     }
 
     public void showWeatherList(Weather[] weathers, GregorianCalendar date) {
-        for (Weather weather : weathers) {
-            System.out.print(date.get(Calendar.DAY_OF_MONTH) + ".");
-            System.out.print(date.get(Calendar.MONTH) + ".");
-            System.out.println(date.get(Calendar.YEAR));
-            System.out.println("Описание: " + weather.description);
-            System.out.println("Влажность: " + weather.humidity);
-            System.out.println("Температура: " + weather.temperature);
-            System.out.println("Ветер: " + weather.wind);
-            System.out.println("Направление ветра: " + weather.windDirection);
-
-            System.out.println("--------------------------------------");
+        Arrays.stream(weathers).forEach(weather ->
+        {
+            showWeather(weather, date);
             date.add(Calendar.DAY_OF_MONTH, 1);
-        }
+        });
+    }
+
+    private void showWeather(Weather weather, GregorianCalendar date) {
+        System.out.print(date.get(Calendar.DAY_OF_MONTH) + ".");
+        System.out.print(date.get(Calendar.MONTH) + ".");
+        System.out.println(date.get(Calendar.YEAR));
+        System.out.println("Описание: " + weather.description);
+        System.out.println("Влажность: " + weather.humidity);
+        System.out.println("Температура: " + weather.temperature);
+        System.out.println("Ветер: " + weather.wind);
+        System.out.println("Направление ветра: " + weather.windDirection);
+        System.out.println("--------------------------------------");
     }
 
     @Override
